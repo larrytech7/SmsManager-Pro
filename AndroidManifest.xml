@@ -44,10 +44,10 @@
         <activity
             android:name="com.example.smsfilter.AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
-            android:parentActivityName="android.preference.PreferenceActivity" >
+            android:parentActivityName="android.preference.PreferenceActivity" ><!-- Default: android.preference.PreferenceActivity -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.preference.PreferenceActivity" />
+                android:value="android.preference.PreferenceActivity" /><!-- Default: same as above -->
         </activity>
     </application>
 

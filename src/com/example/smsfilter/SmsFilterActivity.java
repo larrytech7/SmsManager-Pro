@@ -11,6 +11,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +23,14 @@ public class SmsFilterActivity extends Activity {
 
 	private TextView msgtext; //= (TextView) findViewById(R.id.autoCompleteTextView1);
 	private String SMTP_HOSTNAME;
-	
+	FlyOutContainer root;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		PreferenceManager.setDefaultValues(this, R.xml.appprefrences, false);
-		setContentView(R.layout.activity_sms_filter);
+		root = (FlyOutContainer) this.getLayoutInflater().inflate(R.layout.activity_sms_filter, null);
+		//setContentView(R.layout.activity_sms_filter);
+		setContentView(root);
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class SmsFilterActivity extends Activity {
 			startActivity(new Intent(this,AppSettingsActivity.class));
 			return true;
 		case	R.id.action_about:
+			this.root.toggleMenu();
 			return true;
 		case	R.id.action_exit:
 			System.exit(0);
@@ -110,9 +115,10 @@ public class SmsFilterActivity extends Activity {
 	{
 		final NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.sms_filter)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Outgoing Messsage")
-                .setContentText("Mesasge is being sent").setAutoCancel(true);
+                .setContentText("Mesasge is being sent")
+                .setAutoCancel(true);
        
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, SmsFilterActivity.class);
@@ -138,20 +144,27 @@ public class SmsFilterActivity extends Activity {
 
 	}
 	
-	public void sendSmsMessage(View v)
+	public void sendMessage(View v)
 	{
-		//send the message typed by the user and get feed back from the message service provider
+		//send the message typed Depending on the settings
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String msgType = sp.getString("msg_type", "message");
 		String msg = msgtext.getText().toString();
 		SmsManager smsObject = SmsManager.getDefault();
 		try{
-			//smsObject.sendTextMessage("+23797950531", null, msg, null, null);
-		//notifyUser();
-	//Intent smsit = new Intent(Intent.ACTION_SEND);
+			if(msgType.contains("text messages")){
+			smsObject.sendTextMessage("+23797950531", null, msg, null, null);
+			notifyUser();
+			//Intent smsit = new Intent(Intent.ACTION_SEND);
+			}
+			else
+			{
 			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com" }; String[] cc = {"course9learn2develop.net" };
 			sendEmail(to, cc,new String[]{"webmail@gmail.com","crysmatech@gmail.com"}, "Hi-Tech software" , msg );
 		//	smsit.setData(Uri.parse("smsto: +23797950531"));
 			//smsit.setType(");
 	//		startActivity(smsit);
+			}
 		}
 		catch(Exception ex)
 		{
@@ -159,19 +172,6 @@ public class SmsFilterActivity extends Activity {
 		}
 	}
 
-	public void sendMails(View v)
-	{
-		/*
-		 * Send mail to contact on the device
-		 * create addresses to sendmail to as an array of addresses
-		   create carbon copy addresses to send mails to. Created as string array called cc
-		 */
-		
-		String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com" }; String[] cc = {"course9learn2develop.net" };
-		
-		sendEmail(to, cc,new String[]{"webmail@gmail.com","crysmatech@gmail.com"}, "Hi-Tech Softwares" , "Welcome To LarryTech Corp" );
-		
-	}
 	//version 1.0 simple email client
 	public void sendEmails(String[] tos, String[] cc, String sbj, String msgbody)
 	{
