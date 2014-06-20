@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory 
+        android:key="contact_config"
+        android:title="@string/contact_config">
+        <!-- This preference is for keeping a single contact name or number to filter -->
+	<EditTextPreference 
+	    android:key="contact"
+	    android:title="@string/contact"
+	    android:summary="Name or number of contact to block"
+	    android:defaultValue="owner"/>
+<!-- Keeps the duration with which to keep filtering the sms from the above contact and others -->
+	<EditTextPreference 
+	    android:key="duration"
+	    android:title="@string/duration"
+	    android:summary="Length of time to block the Contact"
+	    android:defaultValue="9999999"
+	    />
+	
+	<!-- pick a contact from the contact content provider on the user's device -->
+	<Preference 
+	    android:title="Pick Contact"
+	    android:summary="Select a contact from amongst your contacts" 
+	    >
+	    <intent android:action="android.intent.action.PICK"
+	       />
+	    
+	</Preference>
+	</PreferenceCategory>
+	<PreferenceCategory 
+	    android:key="msg_config"
+	    android:title="@string/msg_config">
+	<!-- keeps a particular text used to block messages containing it -->
+	<ListPreference
+	    android:key="msg_type"
+	    android:title="Message Type"
+	    android:entries="@array/msg_type"
+	    android:entryValues="@array/msg_type"
+	    android:summary="Choose between two types of messages to block"
+	    android:dialogTitle="Pick One Type"
+	    android:defaultValue="@string/msg_type_default"
+	    />
+		<EditTextPreference 
+	    	android:key="filtered_msg"
+	    	android:title="@string/filter_msg"
+	    	android:summary="Content to filter from the messages"
+	    	android:defaultValue="tweets"/>
+		<!-- Keeps a flag on whether to still store the sms' or not -->
+	    <CheckBoxPreference 
+	    android:key="keepmsg"
+	    android:title="@string/keepmsg"
+	    android:summary="Still let the messages be stored on the device "
+	    android:defaultValue="false"/>
+	</PreferenceCategory>
+	    
+</PreferenceScreen>

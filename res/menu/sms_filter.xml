@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_sms"
+        android:orderInCategory="98"
+        android:showAsAction="ifRoom"
+        android:title="@string/sms"
+        />
+    <item 
+        android:id="@+id/action_mail"
+        android:orderInCategory="97"
+        android:showAsAction="ifRoom"
+        android:title="@string/mail"/>
+    <item 
+        android:id="@+id/action_exit"
+        android:orderInCategory="96"
+        android:showAsAction="ifRoom"
+        android:title="@string/exit"/>
+        
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings"/>
+    <item 
+        android:id="@+id/action_about"
+        android:orderInCategory="99"
+        android:showAsAction="ifRoom"
+        android:title="@string/about"/>
+    
+
+</menu>
