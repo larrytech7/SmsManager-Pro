@@ -1,18 +1,19 @@
 package com.example.smsfilter;
 
+import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.telephony.SmsManager;
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 public class SmsFilterActivity extends Activity {
 
 	private TextView msgtext; //= (TextView) findViewById(R.id.autoCompleteTextView1);
+	private TextView msgaddr;
 	private String SMTP_HOSTNAME;
 	FlyOutContainer root;
 	@Override
@@ -31,6 +33,7 @@ public class SmsFilterActivity extends Activity {
 		root = (FlyOutContainer) this.getLayoutInflater().inflate(R.layout.activity_sms_filter, null);
 		//setContentView(R.layout.activity_sms_filter);
 		setContentView(root);
+	
 	}
 
 	@Override
@@ -50,15 +53,16 @@ public class SmsFilterActivity extends Activity {
 			return true;
 		case	R.id.action_about:
 			this.root.toggleMenu();
+			
 			return true;
 		case	R.id.action_exit:
 			System.exit(0);
 			return true;
-		case	R.id.action_mail:
+		/*case	R.id.action_mail:
 			//send the mail
 			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com" }; String[] cc = {"course9learn2develop.net" };
 			sendEmail(to, cc, new String[]{"webmail@gmail.com","crysmatech@gmail.com"},"Hi-Tech software" , "Welcome to Larrytech Corp" );
-			return true;
+			return true;*/
 		case R.id.action_sms:
 			//send the sms
 			return true;
@@ -108,6 +112,7 @@ public class SmsFilterActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onAttachedToWindow();
 	msgtext = (TextView) findViewById(R.id.autoCompleteTextView1);
+	msgaddr = (TextView) findViewById(R.id.editText1);
 	//notifyUser();
 }
 	
@@ -150,16 +155,61 @@ public class SmsFilterActivity extends Activity {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String msgType = sp.getString("msg_type", "message");
 		String msg = msgtext.getText().toString();
+		String SENT_SMS_ACTION = "SENT_SMS_ACTION";
+		String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";
 		SmsManager smsObject = SmsManager.getDefault();
 		try{
 			if(msgType.contains("text messages")){
-			smsObject.sendTextMessage("+23797950531", null, msg, null, null);
+				
+				// Create the sentIntent parameter
+				Intent sentIntent = new Intent(SENT_SMS_ACTION);
+				PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(),0,sentIntent,0);
+				// Create the deliveryIntent parameter
+				Intent deliveryIntent = new Intent(DELIVERED_SMS_ACTION);
+				PendingIntent deliverPI = PendingIntent.getBroadcast(getApplicationContext(),0,deliveryIntent,0);
+				
+				// Register the Broadcast for sending
+				registerReceiver(new BroadcastReceiver() {
+				@Override
+				public void onReceive(Context _context, Intent _intent) {
+				switch (getResultCode()) {
+				case Activity.RESULT_OK:
+				//[… send success actions … ];
+					Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+					break;
+				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+				//[… generic failure actions … ];
+					Toast.makeText(getApplicationContext(), "GENERIC FAILURE: \n CODE"+SmsManager.RESULT_ERROR_GENERIC_FAILURE, Toast.LENGTH_LONG).show();
+					break;
+				case SmsManager.RESULT_ERROR_RADIO_OFF:
+				//[… radio off failure actions … ]; 
+					Toast.makeText(getApplicationContext(), "Radio OFF, CODE: "+SmsManager.RESULT_ERROR_RADIO_OFF, Toast.LENGTH_LONG).show();
+					break;
+				case SmsManager.RESULT_ERROR_NULL_PDU:
+				//[… null PDU failure actions … ];
+					Toast.makeText(getApplicationContext(), "EMPTY DATA: ERROR: "+SmsManager.RESULT_ERROR_NULL_PDU, Toast.LENGTH_LONG).show();
+					break;
+				}
+				}
+				},new IntentFilter(SENT_SMS_ACTION));
+				//register delivered broadcast
+				registerReceiver(new BroadcastReceiver() {
+					@Override
+					public void onReceive(Context _context, Intent _intent) {
+				//	[… SMS delivered actions … ]
+						Toast.makeText(getApplicationContext(), "Message Successfully Delivered", Toast.LENGTH_LONG).show();
+					}
+					}, new IntentFilter(DELIVERED_SMS_ACTION));
+					// Send the message
+					//smsManager.sendTextMessage(sendTo, null, myMessage, sentPI, deliverPI);
+			smsObject.sendTextMessage("+237"+msgaddr.getText().toString(), null, msg, sentPI, deliverPI);
 			notifyUser();
 			//Intent smsit = new Intent(Intent.ACTION_SEND);
 			}
 			else
 			{
-			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com" }; String[] cc = {"course9learn2develop.net" };
+			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com", msgaddr.getText().toString() }; 
+			String[] cc = {"course9learn2develop.net" };
 			sendEmail(to, cc,new String[]{"webmail@gmail.com","crysmatech@gmail.com"}, "Hi-Tech software" , msg );
 		//	smsit.setData(Uri.parse("smsto: +23797950531"));
 			//smsit.setType(");
@@ -196,8 +246,7 @@ public class SmsFilterActivity extends Activity {
 	String[] to = emailAddresses; String[] cc = carbonCopies;
 	emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
 	emailIntent.putExtra(Intent.EXTRA_CC, cc);
-	String[] bcc = blindcc;
-	emailIntent.putExtra(Intent.EXTRA_BCC, bcc);
+	emailIntent.putExtra(Intent.EXTRA_BCC, blindcc);
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject); 
 	emailIntent.putExtra(Intent.EXTRA_TEXT, message);
 	emailIntent.setType("message/rfc822"); 

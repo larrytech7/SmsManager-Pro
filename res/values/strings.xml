@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SmsFilter</string>
+    <string name="app_name">Advanced SmsManager</string>
     <string name="action_settings">Settings</string>
     <string name="filter_msg">Text/Content To filter</string>
     <string name="newsms">SMS Incoming</string>
@@ -19,7 +19,7 @@
     <string name="readSettings">Read My Settings</string>
     <string name="msg_hint">Enter Message</string>
     <string name="mail">Send Email</string>
-    <string name="sms">Send Sms</string>
+    <string name="sms">Send Message</string>
     <string name="exit">Exit </string>
     <string-array name="msg_type">
         <item name="type_plain_text">text messages</item>

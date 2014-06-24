@@ -62,6 +62,21 @@
         </LinearLayout>
     </ScrollView>
 -->
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="@string/contact"
+        android:inputType="textWebEmailAddress|phone"
+        android:maxHeight="2dp"
+        android:maxLines="2"
+        android:textColor="#fff" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -103,4 +118,5 @@
         android:typeface="monospace" />
 
 </LinearLayout>
+
 </com.example.smsfilter.FlyOutContainer>

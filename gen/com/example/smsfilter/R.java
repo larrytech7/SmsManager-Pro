@@ -32,15 +32,15 @@ public final class R {
         public static final int LinearLayout1=0x7f0a0003;
         public static final int action_about=0x7f0a000b;
         public static final int action_exit=0x7f0a0009;
-        public static final int action_mail=0x7f0a0008;
         public static final int action_settings=0x7f0a000a;
-        public static final int action_sms=0x7f0a0007;
-        public static final int autoCompleteTextView1=0x7f0a0004;
-        public static final int imageButton1=0x7f0a0005;
+        public static final int action_sms=0x7f0a0008;
+        public static final int autoCompleteTextView1=0x7f0a0005;
+        public static final int editText1=0x7f0a0004;
+        public static final int imageButton1=0x7f0a0006;
         public static final int imageMenu1=0x7f0a0001;
         public static final int imageMenu2=0x7f0a0002;
         public static final int menuLayout=0x7f0a0000;
-        public static final int textView1=0x7f0a0006;
+        public static final int textView1=0x7f0a0007;
     }
     public static final class layout {
         public static final int activity_app_settings=0x7f030000;
