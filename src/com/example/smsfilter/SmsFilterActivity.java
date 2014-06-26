@@ -26,6 +26,14 @@ public class SmsFilterActivity extends Activity {
 	private TextView msgaddr;
 	private String SMTP_HOSTNAME;
 	FlyOutContainer root;
+	final String SENT_SMS_ACTION = "SENT_SMS_ACTION";
+	final String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";
+	final int PICK_DATA = 10;
+	private Intent sentIntent;
+	private PendingIntent sentPI;
+	private Intent deliveryIntent;
+	private PendingIntent deliverPI;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +72,11 @@ public class SmsFilterActivity extends Activity {
 			sendEmail(to, cc, new String[]{"webmail@gmail.com","crysmatech@gmail.com"},"Hi-Tech software" , "Welcome to Larrytech Corp" );
 			return true;*/
 		case R.id.action_sms:
-			//send the sms
+			//Pick Data to send as MMS
+			Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
+			pick.setType("image/*");
+			startActivityForResult(pick, PICK_DATA);
+		
 			return true;
 			
 		default:
@@ -111,10 +123,52 @@ public class SmsFilterActivity extends Activity {
 	public void onAttachedToWindow() {
 		// TODO Auto-generated method stub
 		super.onAttachedToWindow();
+		
 	msgtext = (TextView) findViewById(R.id.autoCompleteTextView1);
 	msgaddr = (TextView) findViewById(R.id.editText1);
+	// Create the sentIntent parameter
+	sentIntent = new Intent(SENT_SMS_ACTION);
+	sentPI = PendingIntent.getBroadcast(getApplicationContext(),0,sentIntent,0);
+	// Create the deliveryIntent parameter
+	 deliveryIntent = new Intent(DELIVERED_SMS_ACTION);
+	 deliverPI = PendingIntent.getBroadcast(getApplicationContext(),0,deliveryIntent,0);
+	
+	// Register the Broadcast for sending
+	registerReceiver(new BroadcastReceiver() {
+	@Override
+	public void onReceive(Context _context, Intent _intent) {
+	switch (getResultCode()) {
+	case Activity.RESULT_OK:
+	//[ï¿½ send success actions ï¿½ ];
+		Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+		break;
+	case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+	//[ï¿½ generic failure actions ï¿½ ];
+		Toast.makeText(getApplicationContext(), "GENERIC FAILURE: \n CODE"+SmsManager.RESULT_ERROR_GENERIC_FAILURE, Toast.LENGTH_LONG).show();
+		break;
+	case SmsManager.RESULT_ERROR_RADIO_OFF:
+	//[ï¿½ radio off failure actions ï¿½ ]; 
+		Toast.makeText(getApplicationContext(), "Radio OFF, CODE: "+SmsManager.RESULT_ERROR_RADIO_OFF, Toast.LENGTH_LONG).show();
+		break;
+	case SmsManager.RESULT_ERROR_NULL_PDU:
+	//[ï¿½ null PDU failure actions ï¿½ ];
+		Toast.makeText(getApplicationContext(), "EMPTY DATA: ERROR: "+SmsManager.RESULT_ERROR_NULL_PDU, Toast.LENGTH_LONG).show();
+		break;
+	}
+	}
+	},new IntentFilter(SENT_SMS_ACTION));
+	//register delivered broadcast
+	registerReceiver(new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context _context, Intent _intent) {
+	//	[ï¿½ SMS delivered actions ï¿½ ]
+			Toast.makeText(getApplicationContext(), "Message Successfully Delivered", Toast.LENGTH_LONG).show();
+		}
+		}, new IntentFilter(DELIVERED_SMS_ACTION));
+		// Send the message
+		//smsManager.sendTextMessage(sendTo, null, myMessage, sentPI, deliverPI);
 	//notifyUser();
-}
+	}
 	
 	public void notifyUser()
 	{
@@ -122,7 +176,7 @@ public class SmsFilterActivity extends Activity {
                 new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Outgoing Messsage")
-                .setContentText("Mesasge is being sent")
+                .setContentText("Message is being sent")
                 .setAutoCancel(true);
        
         // Creates an explicit intent for an Activity in your app
@@ -155,56 +209,16 @@ public class SmsFilterActivity extends Activity {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String msgType = sp.getString("msg_type", "message");
 		String msg = msgtext.getText().toString();
-		String SENT_SMS_ACTION = "SENT_SMS_ACTION";
-		String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";
+		/*String SENT_SMS_ACTION = "SENT_SMS_ACTION";
+		String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";*/
 		SmsManager smsObject = SmsManager.getDefault();
 		try{
 			if(msgType.contains("text messages")){
 				
-				// Create the sentIntent parameter
-				Intent sentIntent = new Intent(SENT_SMS_ACTION);
-				PendingIntent sentPI = PendingIntent.getBroadcast(getApplicationContext(),0,sentIntent,0);
-				// Create the deliveryIntent parameter
-				Intent deliveryIntent = new Intent(DELIVERED_SMS_ACTION);
-				PendingIntent deliverPI = PendingIntent.getBroadcast(getApplicationContext(),0,deliveryIntent,0);
-				
-				// Register the Broadcast for sending
-				registerReceiver(new BroadcastReceiver() {
-				@Override
-				public void onReceive(Context _context, Intent _intent) {
-				switch (getResultCode()) {
-				case Activity.RESULT_OK:
-				//[… send success actions … ];
-					Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
-					break;
-				case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-				//[… generic failure actions … ];
-					Toast.makeText(getApplicationContext(), "GENERIC FAILURE: \n CODE"+SmsManager.RESULT_ERROR_GENERIC_FAILURE, Toast.LENGTH_LONG).show();
-					break;
-				case SmsManager.RESULT_ERROR_RADIO_OFF:
-				//[… radio off failure actions … ]; 
-					Toast.makeText(getApplicationContext(), "Radio OFF, CODE: "+SmsManager.RESULT_ERROR_RADIO_OFF, Toast.LENGTH_LONG).show();
-					break;
-				case SmsManager.RESULT_ERROR_NULL_PDU:
-				//[… null PDU failure actions … ];
-					Toast.makeText(getApplicationContext(), "EMPTY DATA: ERROR: "+SmsManager.RESULT_ERROR_NULL_PDU, Toast.LENGTH_LONG).show();
-					break;
-				}
-				}
-				},new IntentFilter(SENT_SMS_ACTION));
-				//register delivered broadcast
-				registerReceiver(new BroadcastReceiver() {
-					@Override
-					public void onReceive(Context _context, Intent _intent) {
-				//	[… SMS delivered actions … ]
-						Toast.makeText(getApplicationContext(), "Message Successfully Delivered", Toast.LENGTH_LONG).show();
-					}
-					}, new IntentFilter(DELIVERED_SMS_ACTION));
-					// Send the message
-					//smsManager.sendTextMessage(sendTo, null, myMessage, sentPI, deliverPI);
 			smsObject.sendTextMessage("+237"+msgaddr.getText().toString(), null, msg, sentPI, deliverPI);
+			//smsObject.sendMultipartTextMessage(destinationAddress, scAddress, parts, sentIntents, deliveryIntents)
 			notifyUser();
-			//Intent smsit = new Intent(Intent.ACTION_SEND);
+			//msg.
 			}
 			else
 			{
@@ -218,7 +232,7 @@ public class SmsFilterActivity extends Activity {
 		}
 		catch(Exception ex)
 		{
-			Toast.makeText(getApplicationContext(), "Message not sent. Please try again", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "Message not sent. Please try again: "+ex.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -253,6 +267,7 @@ public class SmsFilterActivity extends Activity {
 	startActivity(Intent.createChooser(emailIntent, "Email"));
 
 	}
+	
 	/*sms response notifications
 	 * Intent sentit = new Intent("sent_sms_action");
 	 * PendingIntent sentpi = PendingIntent.getBroadcast(getApplicationContext(), 0, sentit, 0);
@@ -286,5 +301,22 @@ public class SmsFilterActivity extends Activity {
 	 *  	SmsManger mysms = SmsManager.getDefault();
 	 *	    mysms.sendTextMessage("receipient", null, "Message", sentpi, responseit);
 	 */
+	@SuppressWarnings("unused")
+	@Override
+	public void onActivityResult(int resultcode, int requestcode, Intent intentData)
+	{
+		if(requestcode == PICK_DATA)
+		{
+			Intent send = new Intent();
+			send.setAction(Intent.ACTION_SEND);// Intent.ACTION_GET_CONTENT; Intent.ACTION_SCREEN_OFF;
+			send.putExtra("address", msgaddr.getText().toString());
+			send.putExtra("sms_body", msgtext.getText().toString());
+			send.putExtra(Intent.EXTRA_STREAM,intentData.getData());
+			if(send.getExtras().getInt(Intent.EXTRA_STREAM) == 0)
+				Toast.makeText(getApplicationContext(), "No Data Selected. MMS Aborted", Toast.LENGTH_LONG).show();
+			else		
+			startActivity(send);
+		}
+	}
 }
 	
