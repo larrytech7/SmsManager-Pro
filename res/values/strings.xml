@@ -19,7 +19,7 @@
     <string name="readSettings">Read My Settings</string>
     <string name="msg_hint">Enter Message</string>
     <string name="mail">Send Email</string>
-    <string name="sms">Send Message</string>
+    <string name="sms">Send MMS</string>
     <string name="exit">Exit </string>
     <string-array name="msg_type">
         <item name="type_plain_text">text messages</item>
@@ -27,5 +27,11 @@
       
     </string-array>
     <string name="msg_type_default">text messages</string>
+    <string-array name="menuitems">
+        <item name="about">About App</item>
+        <item name="help">Help</item>
+        <item name="settings">Settings</item>
+        <item name="quit">Exit</item>
+    </string-array>
 
 </resources>

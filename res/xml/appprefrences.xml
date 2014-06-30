@@ -23,6 +23,7 @@
 	    android:summary="Select a contact from amongst your contacts" 
 	    >
 	    <intent android:action="android.intent.action.PICK"
+	        android:data="content://contacts/people"
 	       />
 	    
 	</Preference>

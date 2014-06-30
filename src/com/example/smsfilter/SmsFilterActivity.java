@@ -28,7 +28,7 @@ public class SmsFilterActivity extends Activity {
 	FlyOutContainer root;
 	final String SENT_SMS_ACTION = "SENT_SMS_ACTION";
 	final String DELIVERED_SMS_ACTION = "DELIVERED_SMS_ACTION";
-	final int PICK_DATA = 10;
+	final int PICK_DATA = 100;
 	private Intent sentIntent;
 	private PendingIntent sentPI;
 	private Intent deliveryIntent;
@@ -48,6 +48,7 @@ public class SmsFilterActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.sms_filter, menu);
+		
 		return true;
 	}
 	
@@ -303,20 +304,31 @@ public class SmsFilterActivity extends Activity {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void onActivityResult(int resultcode, int requestcode, Intent intentData)
+	public void onActivityResult(int requestcode, int resultcode, Intent intentData)
 	{
-		if(requestcode == PICK_DATA)
+		try{
+		if(requestcode == PICK_DATA )
 		{
 			Intent send = new Intent();
 			send.setAction(Intent.ACTION_SEND);// Intent.ACTION_GET_CONTENT; Intent.ACTION_SCREEN_OFF;
 			send.putExtra("address", msgaddr.getText().toString());
 			send.putExtra("sms_body", msgtext.getText().toString());
 			send.putExtra(Intent.EXTRA_STREAM,intentData.getData());
-			if(send.getExtras().getInt(Intent.EXTRA_STREAM) == 0)
+			send.setType("image/*");
+			/*if(send.getExtras().getInt(Intent.EXTRA_STREAM) == 0)
 				Toast.makeText(getApplicationContext(), "No Data Selected. MMS Aborted", Toast.LENGTH_LONG).show();
-			else		
+			else	*/	
 			startActivity(send);
 		}
+		else
+			Toast.makeText(getApplicationContext(), "Nothing to do.\n"
+					+ "Result code: "+resultcode+"\nRequestCode: "+requestcode
+					+RESULT_OK+"\n"+PICK_DATA, Toast.LENGTH_LONG).show();
 	}
+		catch(Exception ex )
+		{
+			Toast.makeText(getApplicationContext(), "Exception: "+ex.getMessage(), Toast.LENGTH_LONG).show();
+		}
 }
+	}
 	

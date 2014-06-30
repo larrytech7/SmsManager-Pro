@@ -15,23 +15,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SmsFilterActivity" >
     
-        <ImageButton
-            android:id="@+id/imageMenu1"
-            android:layout_width="wrap_content"
+        <ListView
+            android:id="@+id/menu_list"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@android:string/ok"
-            android:minHeight="10dp"
-            android:onClick="sendMessage"
-            android:src="@android:drawable/ic_menu_send" />
-        
-        <ImageButton
-            android:id="@+id/imageMenu2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@android:string/ok"
-            android:minHeight="10dp"
-            android:onClick="sendMessage"
-            android:src="@android:drawable/ic_menu_send" />
+            android:cacheColorHint="#f0f"
+            android:divider="#000"
+            android:dividerHeight="@dimen/dividerHeight"
+            android:entries="@array/menuitems"
+            android:fastScrollAlwaysVisible="false"
+            android:fastScrollEnabled="true"
+            android:overScrollFooter="#aaa" >
+            
+        </ListView>
+     
     </LinearLayout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -63,6 +60,16 @@
     </ScrollView>
 -->
 
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="0dp"
+        android:background="#000"
+        android:src="@android:drawable/ic_menu_today"
+        android:visibility="gone" />
+
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
@@ -75,7 +82,7 @@
         android:inputType="textWebEmailAddress|phone"
         android:maxHeight="2dp"
         android:maxLines="2"
-        android:textColor="#fff" />
+        android:textColor="#3f3" />
 
     <LinearLayout
         android:layout_width="match_parent"
