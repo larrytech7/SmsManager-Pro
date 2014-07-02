@@ -41,6 +41,24 @@
 	    android:dialogTitle="Pick One Type"
 	    android:defaultValue="@string/msg_type_default"
 	    />
+	<ListPreference
+	    android:key="loud_sms"
+	    android:title="Read Out Loud"
+	    android:entries="@array/smsloud"
+	    android:entryValues="@array/smsloud"
+	    android:summary="Choose whether to read out loud incoming messages"
+	    android:dialogTitle="Decide "
+	    android:defaultValue="@string/msgdefault"
+	    />
+	<ListPreference
+	    android:key="langlocale"
+	    android:title="Language"
+	    android:entries="@array/preferredlocale"
+	    android:entryValues="@array/preferredlocale"
+	    android:summary="Choose the language used to read incoming messages"
+	    android:dialogTitle="@string/locale"
+	    android:defaultValue="@string/localedefault"
+	    />
 		<EditTextPreference 
 	    	android:key="filtered_msg"
 	    	android:title="@string/filter_msg"

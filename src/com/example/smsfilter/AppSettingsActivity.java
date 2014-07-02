@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
+import com.larrytechcorp.smsfilter.R;
 
 public class AppSettingsActivity extends PreferenceActivity {
 	final int CONTACT = 10;

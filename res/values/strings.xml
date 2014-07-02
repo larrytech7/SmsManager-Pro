@@ -19,12 +19,12 @@
     <string name="readSettings">Read My Settings</string>
     <string name="msg_hint">Enter Message</string>
     <string name="mail">Send Email</string>
-    <string name="sms">Send MMS</string>
+    <string name="sms">Read Message</string>
     <string name="exit">Exit </string>
     <string-array name="msg_type">
         <item name="type_plain_text">text messages</item>
-        <item name="type_emails">email messages</item>
-      
+        <item name="type_emails">email message</item>
+        <item name="type_mms">mms message</item>
     </string-array>
     <string name="msg_type_default">text messages</string>
     <string-array name="menuitems">
@@ -33,5 +33,37 @@
         <item name="settings">Settings</item>
         <item name="quit">Exit</item>
     </string-array>
+    <string-array name="smsloud">
+        <item name="true">YES</item>
+        <item name="false">NO</item>
+    </string-array>
+    <string name="msgdefault">NO</string>
+    <string name="localedefault">US</string>
+    <string name="locale">Choose Language</string>
+    <!-- Default local languages to be used by the texttospeech engine -->
+<string-array name="preferredlocale">
+    <item name="canada">CANADA</item>
+    <item name="canada_french">CANADA_FRENCH</item>
+    <item name="china">CHINA</item>
+    <item name="chinese">CHINESE</item>
+    <item name="english">ENGLISH</item>
+    <item name="france">FRANCE</item>
+    <item name="french">FRENCH</item>
+    <item name="german">GERMAN</item>
+    <item name="germany">GERMANY</item>
+    <item name="italian">ITALIAN</item>
+    <item name="italy">ITALY</item>
+    <item name="japan">JAPAN</item>
+    <item name="japanese">JAPANESE</item>
+    <item name="korea">KOREA</item>
+    <item name="korean">KOREAN</item>
+    <item name="prc">PRC</item>
+    <item name="simplified_chinese">SIMPLIFIED_CHINESE</item>
+    <item name="traditional_chinese">TRADITIONAL_CHINESE</item>
+    <item name="taiwan">TAIWAN</item>
+    <item name="uk">UK</item>
+	<item name="us">US</item>    
+    
+</string-array>
 
 </resources>

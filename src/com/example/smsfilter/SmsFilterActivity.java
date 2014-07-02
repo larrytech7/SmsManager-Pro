@@ -1,5 +1,8 @@
 package com.example.smsfilter;
 
+import java.util.Locale;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,18 +12,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.telephony.SmsManager;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SmsFilterActivity extends Activity {
+import com.larrytechcorp.smsfilter.R;
+
+public class SmsFilterActivity extends Activity implements TextToSpeech.OnInitListener{
 
 	private TextView msgtext; //= (TextView) findViewById(R.id.autoCompleteTextView1);
 	private TextView msgaddr;
@@ -33,6 +42,8 @@ public class SmsFilterActivity extends Activity {
 	private PendingIntent sentPI;
 	private Intent deliveryIntent;
 	private PendingIntent deliverPI;
+	private SharedPreferences appsettings;
+	TextToSpeech tts;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +78,13 @@ public class SmsFilterActivity extends Activity {
 		case	R.id.action_exit:
 			System.exit(0);
 			return true;
-		/*case	R.id.action_mail:
-			//send the mail
-			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com" }; String[] cc = {"course9learn2develop.net" };
-			sendEmail(to, cc, new String[]{"webmail@gmail.com","crysmatech@gmail.com"},"Hi-Tech software" , "Welcome to Larrytech Corp" );
-			return true;*/
 		case R.id.action_sms:
-			//Pick Data to send as MMS
-			Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
-			pick.setType("image/*");
-			startActivityForResult(pick, PICK_DATA);
+			// Read the language locale from the application's settings and set the locale for the TTS engine
+			//appsettings =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			//String localeString = appsettings.getString("langlocale", "No Language found");
+			//Toast.makeText(this, localeString, Toast.LENGTH_LONG).show();
+			//Locale loc = new Locale(localeString.toUpperCase());
+			tts=new TextToSpeech(SmsFilterActivity.this, this);
 		
 			return true;
 			
@@ -85,6 +93,18 @@ public class SmsFilterActivity extends Activity {
 		}
 		
 	}
+	
+	private void ConvertTextToSpeech() {
+	        // if the message is empty, there is nothing to read
+		// just read out the default message of content not available
+	        String text = msgtext.getText().toString();
+	        if(text==null||"".equals(text))
+	        {
+	            text = "Content not available";
+	            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+	        }else
+	            tts.speak(text, TextToSpeech.QUEUE_ADD, null);
+	    }
 	/*
 	public void SendEmail(View but)
 	{
@@ -166,9 +186,7 @@ public class SmsFilterActivity extends Activity {
 			Toast.makeText(getApplicationContext(), "Message Successfully Delivered", Toast.LENGTH_LONG).show();
 		}
 		}, new IntentFilter(DELIVERED_SMS_ACTION));
-		// Send the message
-		//smsManager.sendTextMessage(sendTo, null, myMessage, sentPI, deliverPI);
-	//notifyUser();
+	
 	}
 	
 	public void notifyUser()
@@ -221,7 +239,7 @@ public class SmsFilterActivity extends Activity {
 			notifyUser();
 			//msg.
 			}
-			else
+			else if(msgType.contains("email message"))
 			{
 			String[] to = {"weimenglee9learn2develop.net" , "larryakah@gmail.com", msgaddr.getText().toString() }; 
 			String[] cc = {"course9learn2develop.net" };
@@ -229,6 +247,12 @@ public class SmsFilterActivity extends Activity {
 		//	smsit.setData(Uri.parse("smsto: +23797950531"));
 			//smsit.setType(");
 	//		startActivity(smsit);
+			}
+			else if(msgType.contains("mms message"))
+			{
+				Intent pick = new Intent(Intent.ACTION_GET_CONTENT);
+				pick.setType("image/*");
+				startActivityForResult(pick, PICK_DATA);
 			}
 		}
 		catch(Exception ex)
@@ -257,7 +281,8 @@ public class SmsFilterActivity extends Activity {
 	private void sendEmail(String[] emailAddresses, String[] carbonCopies, String[] blindcc, String subject, String message)
 	{
 		//using intents  method pro
-	Intent emailIntent = new Intent(Intent.ACTION_SEND); emailIntent.setData(Uri.parse("mailto:"));
+	Intent emailIntent = new Intent(Intent.ACTION_SEND); 
+	emailIntent.setData(Uri.parse("mailto:"));
 	String[] to = emailAddresses; String[] cc = carbonCopies;
 	emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
 	emailIntent.putExtra(Intent.EXTRA_CC, cc);
@@ -269,40 +294,6 @@ public class SmsFilterActivity extends Activity {
 
 	}
 	
-	/*sms response notifications
-	 * Intent sentit = new Intent("sent_sms_action");
-	 * PendingIntent sentpi = PendingIntent.getBroadcast(getApplicationContext(), 0, sentit, 0);
-	 * Intent responseit = new Intent("deliver_sms_action");
-	 * PendingIntent response = PengingIntent.getBroadcast(getApplicationContext(), 0, responseit, 0);
-	 * 
-	 * startActivity(sentit);
-	 * 
-	 *  //registering the receivers
-	 *  registerReceiver(new BroadcastReceiver(){
-	 *  @Override
-	 *  public void onReceive(Context ctx, Intent it)
-	 *  {
-	 *  	switch(getResultCode())
-	 *  {
-	 *  	case Activity.RESULT_OK:
-	 *  		//message sent with success
-	 *  		break;
-	 *  }
-	 *  }
-	 *  }, new IntentFilter("sent_sms_action"));
-	 *  registerReceiver(new BroadcastReceiver(){
-	 *  	@Override
-	 *      public void onReceive(Context ctx, Intent it)
-	 *      {
-	 *      	//message delivered successfully
-	 *      }
-	 *  }, new IntentFilter("deliver_sms_action"));
-	 *  
-	 *  // now we use the sms manager API to put everything together
-	 *  	SmsManger mysms = SmsManager.getDefault();
-	 *	    mysms.sendTextMessage("receipient", null, "Message", sentpi, responseit);
-	 */
-	@SuppressWarnings("unused")
 	@Override
 	public void onActivityResult(int requestcode, int resultcode, Intent intentData)
 	{
@@ -311,10 +302,14 @@ public class SmsFilterActivity extends Activity {
 		{
 			Intent send = new Intent();
 			send.setAction(Intent.ACTION_SEND);// Intent.ACTION_GET_CONTENT; Intent.ACTION_SCREEN_OFF;
+			send.setData(Uri.parse("smsto:"));
+			//send.setType("vnd.android-dir/mms-sms");
+		//	send.setType("text/plain");
 			send.putExtra("address", msgaddr.getText().toString());
 			send.putExtra("sms_body", msgtext.getText().toString());
 			send.putExtra(Intent.EXTRA_STREAM,intentData.getData());
 			send.setType("image/*");
+			//sms_body was in a putExtra method
 			/*if(send.getExtras().getInt(Intent.EXTRA_STREAM) == 0)
 				Toast.makeText(getApplicationContext(), "No Data Selected. MMS Aborted", Toast.LENGTH_LONG).show();
 			else	*/	
@@ -330,5 +325,132 @@ public class SmsFilterActivity extends Activity {
 			Toast.makeText(getApplicationContext(), "Exception: "+ex.getMessage(), Toast.LENGTH_LONG).show();
 		}
 }
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String msgType = sp.getString("msg_type", "message");
+			if(msgType.contains("email message"))
+			{
+				msgaddr.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+			}
 	}
+	
+	@Override 
+	public void onPause()
+	{
+		super.onPause();
+		try{
+		tts.stop();
+		tts.shutdown();
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			Log.d("Cannot Pause Activity", ""+ex.getLocalizedMessage());
+		}
+	}
+
+	
+	@Override
+	public void onInit(int status) {
+		// TODO Auto-generated method stub
+		 if(status == TextToSpeech.SUCCESS){
+     
+            appsettings =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+ 			String localeString = appsettings.getString("langlocale", "No Language found");
+ 			Toast.makeText(this, localeString, Toast.LENGTH_LONG).show();
+ 			//Locale lc = new Locale("");
+ 			//localeString = localeString.toUpperCase(lc);
+ 			Locale loc = new Locale(localeString.toUpperCase(Locale.getDefault()));
+ 			
+ 			int result;//=tts.setLanguage(Locale.FRENCH);
+ 			switch(localeString)
+ 			{
+ 			case "CANADA":
+ 				result = tts.setLanguage(Locale.CANADA);
+ 				break;
+ 			case "CANADA_FRENCH":
+ 				result = tts.setLanguage(Locale.CANADA_FRENCH);
+ 				break;
+ 			case "CHINA":
+ 				result = tts.setLanguage(Locale.CHINA);
+ 				break;
+ 			case "CHINESE":
+ 				result = tts.setLanguage(Locale.CHINESE);
+ 				break;
+ 			case "ENGLISH":
+ 				result = tts.setLanguage(Locale.ENGLISH);
+ 				break; 
+ 			case "FRANCE":
+ 				result = tts.setLanguage(Locale.FRANCE);
+ 				break; 
+ 			case "FRENCH":
+ 				result = tts.setLanguage(Locale.FRENCH);
+ 				break;
+ 			case "GERMAN":
+ 				result = tts.setLanguage(Locale.GERMAN);
+ 				break;
+ 			case "GERMANY":
+ 				result = tts.setLanguage(Locale.GERMANY);
+ 				break;
+ 			case "ITALIAN":
+ 				result = tts.setLanguage(Locale.ITALIAN);
+ 				break;
+ 			case "ITALY":
+ 				result = tts.setLanguage(Locale.ITALY);
+ 				break;
+ 			case "JAPAN":
+ 				result = tts.setLanguage(Locale.JAPAN);
+ 				break;
+ 			case "JAPANESE":
+ 				result = tts.setLanguage(Locale.JAPANESE);
+ 				break;
+ 			case "KOREA":
+ 				result = tts.setLanguage(Locale.KOREA);
+ 				break;
+ 			case "KOREAN":
+ 				result = tts.setLanguage(Locale.KOREAN);
+ 				break;
+ 			case "PRC":
+ 				result = tts.setLanguage(Locale.PRC);
+ 				break;
+ 			case "SIMPLIFIED_CHINESE":
+ 				result = tts.setLanguage(Locale.SIMPLIFIED_CHINESE);
+ 				break;
+ 			case "TAIWAN":
+ 				result = tts.setLanguage(Locale.TAIWAN);
+ 				break;
+ 			case "UK":
+ 				result = tts.setLanguage(Locale.UK);
+ 				break;
+ 			case "US":
+ 				result = tts.setLanguage(Locale.US);
+ 				break;
+ 			case "TRADITONAL_CHINESE":
+ 				result = tts.setLanguage(Locale.TRADITIONAL_CHINESE);
+ 				break;
+ 			default:
+ 				result = tts.setLanguage(Locale.US);
+ 				break;
+ 			}
+ 			 if(result==TextToSpeech.LANG_MISSING_DATA ||
+                     result==TextToSpeech.LANG_NOT_SUPPORTED){
+                 Log.e("error", "This Language is not supported");
+                 Toast.makeText(getApplicationContext(), "This Language is not supported: "+loc.toString(), Toast.LENGTH_LONG).show();
+             }
+             else{
+                 ConvertTextToSpeech();
+             }
+         }
+         else{
+             Log.e("error", "Initilization Failed!");
+             Toast.makeText(getApplicationContext(), "Initialization Failed", Toast.LENGTH_LONG).show();
+     }
+	}
+}
 	

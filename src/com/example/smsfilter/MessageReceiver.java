@@ -14,7 +14,8 @@ import android.widget.Toast;
 public class MessageReceiver extends BroadcastReceiver {
 //intercepting system broadcast message(incoming SMS in this case)
 	ProgressDialog msgDialog;
-	SharedPreferences appSp;
+	SharedPreferences appSp; //use this shared preference to check if the user requires that 
+	//his messages be read in real time
 	//constants for settings as defined in the preference file
 	final static String contact = "contact";
 	final static String duration = "duration";
