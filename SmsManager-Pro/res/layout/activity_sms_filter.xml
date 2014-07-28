@@ -1,0 +1,129 @@
+<com.example.smsfilter.FlyOutContainer xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menuLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".SmsFilterActivity" >
+    
+        <ListView
+            android:id="@+id/menu_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#f0f"
+            android:divider="#000"
+            android:dividerHeight="@dimen/dividerHeight"
+            android:entries="@array/menuitems"
+            android:fastScrollAlwaysVisible="false"
+            android:fastScrollEnabled="true"
+            android:overScrollFooter="#aaa" >
+            
+        </ListView>
+     
+    </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sms_filter"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".SmsFilterActivity" >
+<!--  
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="0.78"
+        android:clipChildren="true" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+-->
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="0dp"
+        android:background="#000"
+        android:src="@android:drawable/ic_menu_today"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="@string/contact"
+        android:inputType="textWebEmailAddress|phone"
+        android:maxHeight="2dp"
+        android:maxLines="2"
+        android:textColor="#3f3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@android:string/ok"
+            android:ems="10"
+            android:hint="@string/msg_hint"
+            android:maxLines="3"
+            android:minLines="2" >
+
+            <requestFocus />
+        </AutoCompleteTextView>
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@android:string/ok"
+            android:minHeight="10dp"
+            android:onClick="sendMessage"
+            android:src="@android:drawable/ic_menu_send" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|fill"
+        android:text="@string/usage"
+        android:textColor="#fff"
+        android:textSize="@dimen/apheight"
+        android:textStyle="bold|italic"
+        android:typeface="monospace" />
+
+</LinearLayout>
+
+</com.example.smsfilter.FlyOutContainer>
